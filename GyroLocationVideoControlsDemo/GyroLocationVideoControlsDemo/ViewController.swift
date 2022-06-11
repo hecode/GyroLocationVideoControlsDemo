@@ -14,12 +14,6 @@ class ViewController: UIViewController {
 
         presentVideoController()
     }
-
-    
-    // MARK: - Actions
-    @IBAction func relaunchAction(_ sender: UIButton) {
-        presentVideoController()
-    }
     
     func presentVideoController() {
         let vc = VideoController()
