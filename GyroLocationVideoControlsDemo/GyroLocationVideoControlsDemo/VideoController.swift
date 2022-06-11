@@ -138,21 +138,25 @@ extension VideoController: CLLocationManagerDelegate {
 extension VideoController {
     
     func setupGyro() {
-        motion.gyroUpdateInterval = 0.5
+        motion.gyroUpdateInterval = 1
         motion.startGyroUpdates(to: OperationQueue.current!) {
             (data, error) in
             if let trueData = data {
-                self.view.reloadInputViews()
                 let x = trueData.rotationRate.x
                 let z = trueData.rotationRate.z
-                
-                if let currentTime = self.avVC?.player?.currentTime() {
-                    let newTimeInSecs = currentTime.seconds.advanced(by: z <= 0 ? -1 : 1)
-                    self.avVC?.player?.seek(to: CMTimeMakeWithSeconds(newTimeInSecs, preferredTimescale: currentTime.timescale))
+//                debugPrint(data as Any)
+
+                if !(z < 0.5 && z > -0.5) {
+                    if let currentTime = self.avVC?.player?.currentTime() {
+                        let newTimeInSecs = currentTime.seconds.advanced(by: z <= 0 ? -1 : 1)
+                        self.avVC?.player?.seek(to: CMTimeMakeWithSeconds(newTimeInSecs, preferredTimescale: currentTime.timescale))
+                    }
                 }
-                
-                if let volume = self.avVC?.player?.volume {
-                    self.avVC?.player?.volume = volume + Float(x <= 0 ? -1 : 1)
+               
+                if !(x < 0.5 && x > -0.5) {
+                    if let volume = self.avVC?.player?.volume {
+                        self.avVC?.player?.volume = volume + Float(x <= 0 ? -0.1 : 0.1)
+                    }
                 }
             }
         }
